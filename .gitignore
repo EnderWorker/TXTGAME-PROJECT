@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.spec
+
+# 세션 파일 (로그인 쿠키 — 절대 커밋하지 말 것)
+saves/genspark_session.json
+saves/*.json
+
+# 로그 및 스크린샷
+logs/
+
+# 가상 환경
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# PyInstaller 임시
+_playwright_hook.py

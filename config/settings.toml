@@ -1,0 +1,19 @@
+[genspark]
+base_url = "https://chat.genspark.ai"
+default_model = "Claude Sonnet"
+headless = true
+input_delay_min = 0.03
+input_delay_max = 0.08
+response_timeout = 120
+response_stable_duration = 3
+
+[session]
+cookie_file = "saves/genspark_session.json"
+auto_save = true
+
+[game]
+max_exchanges_before_compaction = 25
+
+[logging]
+level = "DEBUG"
+file = "logs/app.log"

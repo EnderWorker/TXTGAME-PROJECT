@@ -1,0 +1,485 @@
+/* ═══════════════════════════════════════════════════
+   Text RPG Engine — 다크 테마 Textual CSS
+   ═══════════════════════════════════════════════════ */
+
+/* ── 전체 기본값 ──────────────────────────────────── */
+Screen {
+    background: #1a1a2e;
+    color: #c8c8d4;
+}
+
+/* ── 타이틀 화면 ──────────────────────────────────── */
+TitleScreen {
+    align: center middle;
+    background: #1a1a2e;
+}
+
+#title-container {
+    align: center middle;
+    width: 70;
+    height: auto;
+    padding: 2 4;
+}
+
+#ascii-title {
+    color: #e94560;
+    text-style: bold;
+    text-align: center;
+    width: 100%;
+    padding-bottom: 1;
+}
+
+#subtitle {
+    color: #7a7a9a;
+    text-align: center;
+    width: 100%;
+    padding-bottom: 2;
+}
+
+#title-menu {
+    align: center middle;
+    width: 40;
+    height: auto;
+}
+
+.title-btn {
+    width: 30;
+    margin: 0 0 1 0;
+    background: #0f3460;
+    color: #c8c8d4;
+    border: solid #533483;
+}
+
+.title-btn:hover {
+    background: #533483;
+    color: #ffffff;
+}
+
+.title-btn:focus {
+    background: #533483;
+    border: solid #e94560;
+}
+
+/* ── 설정 화면 ────────────────────────────────────── */
+SetupScreen {
+    background: #1a1a2e;
+}
+
+#setup-container {
+    width: 80%;
+    height: 90%;
+    align: center middle;
+    margin: 1 auto;
+}
+
+#setup-title {
+    color: #e94560;
+    text-style: bold;
+    text-align: center;
+    padding-bottom: 1;
+    height: 3;
+}
+
+#setup-body {
+    layout: horizontal;
+    height: 1fr;
+    width: 100%;
+}
+
+#world-panel {
+    width: 55%;
+    height: 100%;
+    border: round #0f3460;
+    padding: 1;
+    margin-right: 1;
+}
+
+#world-panel-title {
+    color: #7b9fe0;
+    text-style: bold;
+    padding-bottom: 1;
+}
+
+#world-list {
+    height: 1fr;
+    background: #16213e;
+    border: solid #0f3460;
+}
+
+#world-desc {
+    height: 6;
+    background: #0d1b2a;
+    color: #9090aa;
+    border: solid #0f3460;
+    padding: 1;
+    margin-top: 1;
+    overflow-y: auto;
+}
+
+#char-panel {
+    width: 45%;
+    height: 100%;
+    border: round #0f3460;
+    padding: 1;
+}
+
+#char-panel-title {
+    color: #7b9fe0;
+    text-style: bold;
+    padding-bottom: 1;
+}
+
+.field-label {
+    color: #7a7a9a;
+    padding-top: 1;
+}
+
+.field-input {
+    background: #16213e;
+    border: solid #0f3460;
+    color: #c8c8d4;
+    margin-bottom: 1;
+}
+
+.field-input:focus {
+    border: solid #533483;
+}
+
+#setup-buttons {
+    layout: horizontal;
+    height: 4;
+    align: right middle;
+    padding-top: 1;
+}
+
+#btn-back {
+    background: #2a2a4a;
+    border: solid #3a3a5a;
+    color: #9090aa;
+    margin-right: 1;
+}
+
+#btn-start {
+    background: #533483;
+    border: solid #e94560;
+    color: #ffffff;
+    text-style: bold;
+}
+
+#btn-start:hover {
+    background: #e94560;
+}
+
+/* ── 게임 화면 ────────────────────────────────────── */
+GameScreen {
+    background: #1a1a2e;
+    layout: vertical;
+}
+
+#game-header {
+    height: 2;
+    background: #0f1923;
+    color: #7b9fe0;
+    padding: 0 2;
+    border-bottom: solid #0f3460;
+}
+
+#game-body {
+    layout: horizontal;
+    height: 1fr;
+}
+
+#left-panel {
+    width: 75%;
+    layout: vertical;
+    height: 100%;
+}
+
+/* 서사 로그 */
+#narrative-log {
+    height: 1fr;
+    background: #16213e;
+    border: round #0f3460;
+    padding: 1 2;
+    margin: 1 0 0 1;
+    scrollbar-color: #533483;
+    scrollbar-background: #16213e;
+}
+
+/* 선택지 패널 */
+#choice-panel {
+    height: auto;
+    min-height: 5;
+    max-height: 12;
+    background: #0d1b2a;
+    border: round #533483;
+    padding: 0 2;
+    margin: 1 0 0 1;
+}
+
+/* 입력 패널 */
+#input-panel {
+    height: 5;
+    background: #0f1923;
+    border: round #0f3460;
+    padding: 1 2;
+    margin: 1 0 1 1;
+    layout: vertical;
+}
+
+#game-input {
+    background: #1a1a2e;
+    border: solid #533483;
+    color: #c8c8d4;
+    height: 3;
+}
+
+#game-input:focus {
+    border: solid #e94560;
+}
+
+/* 오른쪽 상태 패널 */
+#stat-panel {
+    width: 25%;
+    height: 100%;
+    background: #0f1923;
+    border: round #0f3460;
+    padding: 1;
+    margin: 1 1 1 0;
+    overflow-y: auto;
+}
+
+/* HP 바 */
+HPBar {
+    height: 2;
+    margin-bottom: 1;
+}
+
+.hp-bar-label {
+    color: #7a7a9a;
+    height: 1;
+}
+
+.hp-bar-fill {
+    height: 1;
+}
+
+.hp-high {
+    color: #00cc66;
+    background: #00cc66;
+}
+
+.hp-mid {
+    color: #ffcc00;
+    background: #ffcc00;
+}
+
+.hp-low {
+    color: #e94560;
+    background: #e94560;
+}
+
+.hp-empty {
+    color: #3a3a5a;
+    background: #3a3a5a;
+}
+
+/* 상태 패널 내부 */
+.stat-section-title {
+    color: #7b9fe0;
+    text-style: bold;
+    padding-top: 1;
+}
+
+.stat-row {
+    color: #c8c8d4;
+    height: 1;
+}
+
+.stat-value {
+    color: #e0e060;
+}
+
+.stat-effect {
+    color: #ff8080;
+}
+
+.stat-quest {
+    color: #80c080;
+}
+
+.stat-location {
+    color: #80c8e0;
+}
+
+/* 선택지 내부 */
+.choice-title {
+    color: #533483;
+    text-style: bold;
+    height: 2;
+    padding-top: 1;
+}
+
+.choice-item {
+    color: #c8c8d4;
+    height: 1;
+    padding-left: 1;
+}
+
+.choice-number {
+    color: #e94560;
+    text-style: bold;
+}
+
+/* 게임 푸터 */
+GameFooter {
+    height: 2;
+    background: #0f1923;
+    color: #7a7a9a;
+    padding: 0 2;
+    border-top: solid #0f3460;
+}
+
+/* ── 세이브/로드 모달 ────────────────────────────── */
+SaveLoadScreen {
+    align: center middle;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+#saveload-dialog {
+    width: 70;
+    height: 30;
+    background: #16213e;
+    border: double #533483;
+    padding: 1 2;
+}
+
+#saveload-title {
+    color: #e94560;
+    text-style: bold;
+    text-align: center;
+    height: 2;
+    padding-bottom: 1;
+}
+
+#save-table {
+    height: 1fr;
+    background: #0f1923;
+    border: solid #0f3460;
+    margin-bottom: 1;
+}
+
+#saveload-buttons {
+    layout: horizontal;
+    height: 3;
+    align: right middle;
+}
+
+.saveload-btn {
+    margin-left: 1;
+    background: #0f3460;
+    border: solid #533483;
+}
+
+.saveload-btn:hover {
+    background: #533483;
+}
+
+#btn-saveload-confirm {
+    background: #533483;
+    border: solid #e94560;
+    color: #ffffff;
+}
+
+/* ── 게임 오버 화면 ───────────────────────────────── */
+GameOverScreen {
+    align: center middle;
+    background: #0a0a14;
+}
+
+#gameover-container {
+    align: center middle;
+    width: 70;
+    height: auto;
+    padding: 2 4;
+}
+
+#gameover-title {
+    color: #e94560;
+    text-style: bold;
+    text-align: center;
+    padding-bottom: 2;
+}
+
+#gameover-text {
+    color: #9090aa;
+    text-align: center;
+    height: 10;
+    padding-bottom: 2;
+    overflow-y: auto;
+}
+
+#gameover-buttons {
+    layout: horizontal;
+    height: 4;
+    align: center middle;
+}
+
+.gameover-btn {
+    margin: 0 1;
+    background: #1a1a2e;
+    border: solid #533483;
+}
+
+.gameover-btn:hover {
+    background: #533483;
+}
+
+/* ── 로딩 화면 ────────────────────────────────────── */
+LoadingScreen {
+    align: center middle;
+    background: #1a1a2e;
+}
+
+#loading-container {
+    align: center middle;
+    width: 50;
+    height: 10;
+    border: round #533483;
+    padding: 2;
+}
+
+#loading-text {
+    color: #7b9fe0;
+    text-align: center;
+    text-style: bold;
+}
+
+#loading-detail {
+    color: #7a7a9a;
+    text-align: center;
+    padding-top: 1;
+}
+
+/* ── 공통 유틸 ────────────────────────────────────── */
+.separator {
+    height: 1;
+    color: #0f3460;
+    background: #0f3460;
+}
+
+.error-text {
+    color: #e94560;
+}
+
+.success-text {
+    color: #00cc66;
+}
+
+.warning-text {
+    color: #ffcc00;
+}
+
+.muted-text {
+    color: #7a7a9a;
+}

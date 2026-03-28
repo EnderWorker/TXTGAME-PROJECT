@@ -1,0 +1,6 @@
+playwright>=1.40.0
+textual>=0.47.0
+rich>=13.0.0
+toml>=0.10.2
+loguru>=0.7.0
+pyinstaller>=6.0.0
