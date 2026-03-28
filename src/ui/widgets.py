@@ -6,6 +6,7 @@ Text RPG 커스텀 Textual 위젯 모음.
 
 from __future__ import annotations
 
+from loguru import logger
 from textual.app import ComposeResult
 from textual.widgets import Input, RichLog, Static
 
@@ -100,8 +101,8 @@ class StatPanel(Static):
                 int(state.get("hp", 100)),
                 int(state.get("max_hp", 100)),
             )
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("HP 바 업데이트 실패: {}", exc)
 
         # MP 바 업데이트
         try:
@@ -110,8 +111,8 @@ class StatPanel(Static):
                 int(state.get("mp", 50)),
                 int(state.get("max_mp", 50)),
             )
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("MP 바 업데이트 실패: {}", exc)
 
         # 상세 정보 업데이트
         lines: list[str] = []
@@ -143,8 +144,8 @@ class StatPanel(Static):
         try:
             details = self.query_one("#stat-details", Static)
             details.update("\n".join(lines))
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("stat-details 업데이트 실패: {}", exc)
 
 
 class NarrativeLog(RichLog):

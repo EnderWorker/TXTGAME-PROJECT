@@ -42,6 +42,9 @@ class GameResponse:
 class ResponseParser:
     """AI 텍스트 응답을 GameResponse로 파싱한다."""
 
+    # 서사 텍스트 내의 [...] 와 구분하기 위해 알려진 태그만 섹션 경계로 사용한다
+    KNOWN_SECTION_TAGS = r'^\[(?:서사|상태|선택지|GAME_OVER|COMBAT)\]'
+
     def parse(self, raw_response: str) -> GameResponse:
         """메인 파싱 메서드.
 
@@ -126,7 +129,7 @@ class ResponseParser:
 
         # 다음 섹션 태그는 반드시 줄 시작 위치에 있어야 한다.
         # (JSON 배열 안의 [...] 와 구분하기 위함)
-        pattern_next = re.compile(r'^\[[^\]]+\]', re.MULTILINE)
+        pattern_next = re.compile(self.KNOWN_SECTION_TAGS, re.MULTILINE | re.IGNORECASE)
         match_next = pattern_next.search(text, start)
 
         if match_next:

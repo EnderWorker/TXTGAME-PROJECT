@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from loguru import logger
 from textual import work
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, ScrollableContainer, Vertical
@@ -71,8 +72,8 @@ class LoadingScreen(Screen):
         """로딩 상태 메시지를 업데이트한다."""
         try:
             self.query_one("#loading-detail", Static).update(message)
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("loading-detail 업데이트 실패: {}", exc)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -333,16 +334,14 @@ class GameScreen(Screen):
 
         try:
             response = await engine.process_player_action(action)
-            self.call_from_thread(self.update_display, response)
+            self.update_display(response)
         except Exception as exc:
-            from loguru import logger
             logger.error("플레이어 행동 처리 오류: {}", exc)
-            self.call_from_thread(
-                self.query_one(NarrativeLog).add_system_message,
+            self.query_one(NarrativeLog).add_system_message(
                 f"[red]오류가 발생했습니다: {exc}[/red]",
             )
         finally:
-            self.call_from_thread(game_input.set_ready)
+            game_input.set_ready()
 
     def update_display(self, response: "GameResponse") -> None:
         """게임 응답으로 UI 각 영역을 업데이트한다.
@@ -358,8 +357,8 @@ class GameScreen(Screen):
         if response.state:
             try:
                 self.query_one(StatPanel).update_stats(response.state)
-            except Exception:
-                pass
+            except Exception as exc:
+                logger.debug("StatPanel 업데이트 실패: {}", exc)
 
         # 선택지 업데이트
         self._last_choices = response.choices
@@ -382,8 +381,8 @@ class GameScreen(Screen):
             if location:
                 subtitle = f"{location}  |  턴 {turn}"
             self.query_one(Header).sub_title = subtitle
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("헤더 업데이트 실패: {}", exc)
 
     async def _handle_game_over(self, response: "GameResponse") -> None:
         """게임 오버 화면으로 전환한다."""
@@ -469,15 +468,17 @@ class SaveLoadScreen(ModalScreen):
 
     CSS_PATH = "styles.tcss"
 
-    def __init__(self, mode: str = "save") -> None:
+    def __init__(self, mode: str = "save", state_manager=None) -> None:
         """
         Args:
             mode: "save" 또는 "load"
+            state_manager: 공유 StateManager 인스턴스 (None 이면 app.engine에서 조회)
         """
         super().__init__()
         self._mode = mode
         self._saves: list[dict] = []
         self._selected_idx: int = -1
+        self._state_manager = state_manager
 
     def compose(self) -> ComposeResult:
         title = "게임 저장" if self._mode == "save" else "게임 불러오기"
@@ -502,9 +503,14 @@ class SaveLoadScreen(ModalScreen):
 
     def on_mount(self) -> None:
         """세이브 목록을 DataTable에 로드한다."""
-        from ..engine.state_manager import StateManager
-        sm = StateManager()
-        self._saves = sm.list_saves()
+        if self._state_manager is None:
+            engine = getattr(self.app, "engine", None)
+            if engine:
+                self._state_manager = engine.state_manager
+            else:
+                from ..engine.state_manager import StateManager
+                self._state_manager = StateManager()
+        self._saves = self._state_manager.list_saves()
 
         table = self.query_one(DataTable)
         table.add_columns("이름", "캐릭터", "세계관", "저장 시간", "턴")
@@ -525,8 +531,8 @@ class SaveLoadScreen(ModalScreen):
                 default_name = f"{char}의 모험"
                 try:
                     self.query_one("#save-name-input", Input).value = default_name
-                except Exception:
-                    pass
+                except Exception as exc:
+                    logger.debug("save-name-input 기본값 설정 실패: {}", exc)
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
         """테이블에서 행을 선택했을 때 인덱스를 저장한다."""
@@ -546,7 +552,8 @@ class SaveLoadScreen(ModalScreen):
         if self._mode == "save":
             try:
                 name = self.query_one("#save-name-input", Input).value.strip()
-            except Exception:
+            except Exception as exc:
+                logger.debug("save-name-input 읽기 실패: {}", exc)
                 name = ""
             if not name:
                 name = "자동저장"
@@ -565,10 +572,8 @@ class SaveLoadScreen(ModalScreen):
         if self._selected_idx < 0 or self._selected_idx >= len(self._saves):
             self.app.notify("삭제할 파일을 선택하세요.", severity="warning")
             return
-        from ..engine.state_manager import StateManager
         slot = self._saves[self._selected_idx].get("file", "")
-        sm = StateManager()
-        sm.delete_save(slot)
+        self._state_manager.delete_save(slot)
         self.app.notify(f"'{slot}' 세이브를 삭제했습니다.")
         self.dismiss()
 

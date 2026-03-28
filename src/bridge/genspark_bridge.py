@@ -477,7 +477,7 @@ class GensparkBridge:
         """
         await locator.click()
         for char in text:
-            await locator.press_sequentially(char, delay=0)
+            await self._page.keyboard.type(char, delay=0)
             await asyncio.sleep(
                 random.uniform(self._input_delay_min, self._input_delay_max)
             )

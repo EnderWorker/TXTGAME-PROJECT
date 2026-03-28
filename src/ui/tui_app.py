@@ -67,39 +67,39 @@ class TextRPGApp(App):
         loading: LoadingScreen | None = None
         try:
             loading = self.query_one(LoadingScreen)
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("LoadingScreen 쿼리 실패: {}", exc)
 
         def update_loading(msg: str) -> None:
             if loading:
                 try:
                     loading.update_status(msg)
-                except Exception:
-                    pass
+                except Exception as exc:
+                    logger.debug("loading.update_status 실패: {}", exc)
 
         try:
-            self.call_from_thread(update_loading, "Playwright 브라우저 시작 중...")
+            update_loading("Playwright 브라우저 시작 중...")
             self.bridge = GensparkBridge(self.config)
 
-            self.call_from_thread(update_loading, "Genspark 접속 중...")
+            update_loading("Genspark 접속 중...")
             await self.bridge.initialize()
 
-            self.call_from_thread(update_loading, "연결 완료! 게임을 시작합니다...")
+            update_loading("연결 완료! 게임을 시작합니다...")
             logger.info("브릿지 초기화 완료")
 
             # 타이틀 화면으로 전환
-            self.call_from_thread(self._switch_to_title)
+            self._switch_to_title()
 
         except Exception as exc:
             logger.error("브릿지 초기화 실패: {}", exc)
-            self.call_from_thread(self._show_init_error, str(exc))
+            self._show_init_error(str(exc))
 
     def _switch_to_title(self) -> None:
         """로딩 화면에서 타이틀 화면으로 전환한다."""
         try:
             self.pop_screen()  # LoadingScreen 제거
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("pop_screen 실패: {}", exc)
         self.push_screen(TitleScreen())
 
     def _show_init_error(self, error_msg: str) -> None:
@@ -157,12 +157,10 @@ class TextRPGApp(App):
 
         try:
             response = await self.engine.start_new_game(world, character)
-            self.call_from_thread(self._apply_first_response, response)
+            self._apply_first_response(response)
         except Exception as exc:
             logger.error("게임 시작 워커 오류: {}", exc)
-            self.call_from_thread(
-                self.notify, f"게임 시작 오류: {exc}", "error"
-            )
+            self.notify(f"게임 시작 오류: {exc}", severity="error")
 
     def _apply_first_response(self, response: "GameResponse") -> None:
         """첫 게임 응답을 GameScreen에 적용한다."""
@@ -199,22 +197,20 @@ class TextRPGApp(App):
             response = await self.engine.load_game(slot_name)
 
             # GameScreen이 없으면 생성
-            def _switch() -> None:
-                try:
-                    game_screen = self.query_one(GameScreen)
-                    game_screen.set_initial_response(response)
-                except Exception:
-                    game_screen = GameScreen()
-                    self.switch_screen(game_screen)
-                    self.call_later(game_screen.set_initial_response, response)
-
-            self.call_from_thread(_switch)
+            try:
+                game_screen = self.query_one(GameScreen)
+                game_screen.set_initial_response(response)
+            except Exception as exc:
+                logger.debug("GameScreen 쿼리 실패, 새 화면 생성: {}", exc)
+                game_screen = GameScreen()
+                self.switch_screen(game_screen)
+                self.call_later(game_screen.set_initial_response, response)
 
         except FileNotFoundError:
-            self.call_from_thread(self.notify, "세이브 파일을 찾을 수 없습니다.", "error")
+            self.notify("세이브 파일을 찾을 수 없습니다.", severity="error")
         except Exception as exc:
             logger.error("게임 로드 워커 오류: {}", exc)
-            self.call_from_thread(self.notify, f"로드 오류: {exc}", "error")
+            self.notify(f"로드 오류: {exc}", severity="error")
 
     # ── 전역 키 바인딩 액션 ──────────────────────────────────────────────────
 
@@ -222,8 +218,8 @@ class TextRPGApp(App):
         """F1: 도움말 (GameScreen에 있을 때만)."""
         try:
             self.query_one(GameScreen).action_show_help()
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("action_show_help 실패: {}", exc)
 
     def action_save_game(self) -> None:
         """F5: 빠른 저장."""
@@ -238,8 +234,8 @@ class TextRPGApp(App):
         """ESC: 일시 정지 메뉴."""
         try:
             self.query_one(GameScreen).action_toggle_menu()
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("action_toggle_menu 실패: {}", exc)
 
     # ── 앱 종료 ─────────────────────────────────────────────────────────────
 
